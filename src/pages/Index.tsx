@@ -18,6 +18,7 @@ const Index = () => {
   const [finalEmotion, setFinalEmotion] = useState<string>('');
   const [aiResponse, setAiResponse] = useState<string>('');
   const [emotionHistory, setEmotionHistory] = useState<EmotionEntry[]>([]);
+  const [voiceEmotionMode, setVoiceEmotionMode] = useState<boolean>(false);
 
   const handleVisionEmotion = (emotion: string, confidence: number) => {
     setVisionEmotion(emotion);
@@ -33,6 +34,20 @@ const Index = () => {
     
     // If both are positive or neutral, use text emotion (more explicit)
     return text || vision;
+  };
+
+  const getBackgroundColor = (emotion: string): string => {
+    if (!voiceEmotionMode) return '';
+    
+    const emotionColors: Record<string, string> = {
+      happy: '#FFFACD',      // light yellow
+      sad: '#B0E0E6',        // soft blue
+      angry: '#FFB6C1',      // light red
+      fear: '#B0C4DE',       // grey-blue
+      neutral: '#FFFFFF'     // white
+    };
+    
+    return emotionColors[emotion] || '#FFFFFF';
   };
 
   const handleTextSubmit = async (text: string) => {
@@ -68,7 +83,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
+    <div 
+      className="min-h-screen p-4 md:p-8 transition-colors duration-800"
+      style={voiceEmotionMode && finalEmotion ? { backgroundColor: getBackgroundColor(finalEmotion) } : {}}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="text-center mb-8 animate-fade-in">
@@ -81,6 +99,19 @@ const Index = () => {
           <p className="text-lg text-muted-foreground">
             Human Vision & Emotion Companion
           </p>
+          
+          {/* Voice Emotion Mode Toggle */}
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={voiceEmotionMode}
+                onChange={(e) => setVoiceEmotionMode(e.target.checked)}
+                className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary"
+              />
+              <span className="text-sm text-muted-foreground">Voice Emotion Mode</span>
+            </label>
+          </div>
         </header>
 
         {/* Main Grid */}

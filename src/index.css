@@ -145,4 +145,13 @@ All colors MUST be HSL.
       transform: translateY(0);
     }
   }
+  
+  .transition-colors {
+    transition-property: background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .duration-800 {
+    transition-duration: 800ms;
+  }
 }
