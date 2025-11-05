@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { CameraEmotion } from '@/components/CameraEmotion';
 import { TextVoiceInput } from '@/components/TextVoiceInput';
 import { AIResponse } from '@/components/AIResponse';
@@ -19,6 +19,7 @@ const Index = () => {
   const [aiResponse, setAiResponse] = useState<string>('');
   const [emotionHistory, setEmotionHistory] = useState<EmotionEntry[]>([]);
   const [voiceEmotionMode, setVoiceEmotionMode] = useState<boolean>(false);
+  const responseRef = useRef<HTMLDivElement>(null);
 
   const handleVisionEmotion = (emotion: string, confidence: number) => {
     setVisionEmotion(emotion);
@@ -26,14 +27,12 @@ const Index = () => {
   };
 
   const fuseEmotions = (vision: string, text: string): string => {
-    // Prioritize negative emotions
-    const negativeEmotions = ['sad', 'angry', 'fear'];
-    
-    if (negativeEmotions.includes(vision)) return vision;
-    if (negativeEmotions.includes(text)) return text;
-    
-    // If both are positive or neutral, use text emotion (more explicit)
-    return text || vision;
+    // Priority order: sad > happy > angry > fear > neutral
+    if (vision === 'sad' || text === 'sad') return 'sad';
+    if (vision === 'happy' || text === 'happy') return 'happy';
+    if (vision === 'angry' || text === 'angry') return 'angry';
+    if (vision === 'fear' || text === 'fear') return 'fear';
+    return 'neutral';
   };
 
   const getBackgroundColor = (emotion: string): string => {
@@ -76,6 +75,11 @@ const Index = () => {
       }]);
 
       toast.success('Analysis complete');
+      
+      // Smooth scroll to result
+      setTimeout(() => {
+        responseRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     } catch (error) {
       console.error('Error analyzing emotion:', error);
       toast.error('Failed to analyze emotions. Please try again.');
@@ -127,7 +131,7 @@ const Index = () => {
           </div>
 
           {/* Section 3: AI Response */}
-          <div className="lg:col-span-1">
+          <div ref={responseRef} className="lg:col-span-1">
             <AIResponse response={aiResponse} emotion={finalEmotion} />
           </div>
 

@@ -34,7 +34,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an emotion detection AI. Analyze the text and return ONLY ONE emotion: happy, sad, angry, fear, or neutral. Respond with just the emotion word, nothing else.'
+            content: 'Analyze the following text and return exactly one dominant emotion word from [happy, sad, angry, fear, neutral]. Respond with just the emotion word, nothing else.'
           },
           {
             role: 'user',
@@ -81,11 +81,10 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are an empathetic AI companion. The user is feeling ${finalEmotion}. Generate a warm, caring response (2 sentences max) that:
-1. Acknowledges their emotion with empathy
-2. Offers one psychology-based or motivational suggestion
-
-Be human-like, calming, and genuinely supportive. Use simple, warm language.`
+            content: `You are EmpathAI — an empathetic and kind digital companion. The user's emotion is ${finalEmotion}. Respond in 2 short sentences:
+1️⃣ Express understanding and care.
+2️⃣ Give one helpful or motivational tip.
+Tone: calm, human, positive.`
           },
           {
             role: 'user',

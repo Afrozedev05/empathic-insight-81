@@ -58,6 +58,13 @@ export const TextVoiceInput = ({ onTextSubmit }: TextVoiceInputProps) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <Card className="p-6 backdrop-blur-sm bg-card/80 border-border/50 shadow-lg animate-fade-in">
       <h2 className="text-2xl font-semibold mb-4 text-foreground">
@@ -66,9 +73,10 @@ export const TextVoiceInput = ({ onTextSubmit }: TextVoiceInputProps) => {
       
       <div className="space-y-4">
         <Textarea
-          placeholder="Type how you're feeling, or use voice input..."
+          placeholder="Type your feelings here or use voice... (Press Enter to submit)"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="min-h-[120px] resize-none bg-background/50 border-border/50"
         />
         
